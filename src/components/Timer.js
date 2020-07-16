@@ -7,7 +7,69 @@ class Timer extends React.Component {
     this.state = {
       isSession: true,
       timerSecond: 0,
+      intervalId: 0,
     };
+
+    this.playTimer = this.playTimer.bind(this);
+    this.decreaseTimer = this.decreaseTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
+    this.refreshTimer = this.refreshTimer.bind(this);
+  }
+
+  playTimer() {
+    let intervalId = setInterval(this.decreaseTimer, 1000);
+    this.props.onPlayStopTimer(true);
+    this.setState({
+      intervalId: intervalId,
+    });
+  }
+
+  decreaseTimer() {
+    switch (this.state.timerSecond) {
+      case 0:
+        if (this.props.timerMinute === 0) {
+          if (this.state.isSession) {
+            this.setState({
+              isSession: false,
+            });
+            this.props.toggleInterval(this.state.isSession);
+          } else {
+            this.setState({
+              isSession: true,
+            });
+            this.props.toggleInterval(this.state.isSession);
+          }
+        } else {
+          this.props.updateTimerMinute();
+          this.setState({
+            timerSecond: 59,
+          });
+        }
+
+        break;
+      default:
+        this.setState((prevState) => {
+          return {
+            timerSecond: prevState.timerSecond - 1,
+          };
+        });
+        break;
+    }
+  }
+
+  stopTimer() {
+    clearInterval(this.state.intervalId);
+    this.props.onPlayStopTimer(false);
+  }
+
+  refreshTimer() {
+    this.stopTimer();
+    this.props.resetTimer();
+    this.props.onPlayStopTimer(false);
+    this.setState({
+      timerSecond: 0,
+      isSession: true
+    });
   }
 
   render() {
@@ -26,9 +88,9 @@ class Timer extends React.Component {
           </span>
         </section>
         <section className="timer__action">
-          <button>Play</button>
-          <button>Skip</button>
-          <button>Refresh</button>
+          <button onClick={this.playTimer}>Play</button>
+          <button onClick={this.stopTimer}>Stop</button>
+          <button onClick={this.refreshTimer}>Refresh</button>
         </section>
       </section>
     );

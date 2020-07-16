@@ -3,7 +3,7 @@ import React from "react";
 
 function SessionLength(props) {
     const decreaseCounter = () => {
-        if (props.SessionInterval === 1) {
+        if (props.SessionLength === 1) {
           return;
         }
     
@@ -11,7 +11,7 @@ function SessionLength(props) {
       };
     
       const increaseCounter = () => {
-        if (props.SessionInterval === 60) {
+        if (props.SessionLength === 60) {
           return;
         }
         props.increaseSession();
@@ -21,9 +21,9 @@ function SessionLength(props) {
     <section>
       <h4>Session Interval</h4>
       <section className="interval__container">
-        <button onClick={decreaseCounter}>Down</button>
+        <button disabled = {props.isPlay ? "disabled" : ""} onClick={decreaseCounter}>Down</button>
         <p className="interval__length">{props.SessionLength}</p>
-        <button onClick={increaseCounter}>Up</button>
+        <button disabled = {props.isPlay ? "disabled" : ""} onClick={increaseCounter}>Up</button>
       </section>
     </section>
   );
